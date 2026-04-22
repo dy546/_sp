@@ -1,0 +1,23 @@
+// Control flow examples
+let number = 15;
+
+// If-else
+if number > 10 {
+    print("Number is greater than 10");
+} else {
+    print("Number is 10 or less");
+}
+
+// While loop
+let count = 0;
+while count < 5 {
+    print("Count: " + count);
+    count = count + 1;
+}
+
+// Nested if
+if number > 0 {
+    if number < 20 {
+        print("Number is between 1 and 19");
+    }
+}

@@ -1,0 +1,14 @@
+// Arithmetic operations
+let x = 10;
+let y = 20;
+let sum = x + y;
+let product = x * y;
+
+print("x = " + x);
+print("y = " + y);
+print("x + y = " + sum);
+print("x * y = " + product);
+
+// More complex expression
+let result = (x + y) * 2 - 5;
+print("(x + y) * 2 - 5 = " + result);

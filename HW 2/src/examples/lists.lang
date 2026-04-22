@@ -1,0 +1,15 @@
+// List examples
+let numbers = [1, 2, 3, 4, 5];
+let mixed = [1, "hello", true, null];
+
+print("Numbers list: " + numbers);
+print("Mixed list: " + mixed);
+
+// Nested lists
+let matrix = [[1, 2], [3, 4]];
+print("Matrix: " + matrix);
+
+// List operations (in a real implementation, we'd have list functions)
+// Note: array indexing like numbers[0] is not implemented yet
+print("First list: " + numbers);
+print("Second list: " + mixed);
