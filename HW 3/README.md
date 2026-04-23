@@ -1,6 +1,6 @@
-# Palantir - Satellite & RF Intelligence Platform
+# Satellite & RF Intelligence Platform
 
-A Palantir-like geospatial intelligence platform for tracking satellites and radio frequency sources worldwide.
+A geospatial intelligence platform for tracking satellites and radio frequency sources worldwide.
 
 ## Features
 
@@ -17,7 +17,7 @@ A Palantir-like geospatial intelligence platform for tracking satellites and rad
 
 - **Frontend**: React 18, Vite, Leaflet, satellite.js
 - **Backend**: Node.js, Express, WebSocket, satellite.js
-- **Styling**: Custom CSS with dark Palantir theme
+- **Styling**: Custom CSS with dark intelligence theme
 
 ## Quick Start
 

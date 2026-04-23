@@ -5,8 +5,8 @@ export default function Header({ searchQuery, onSearch }) {
     <header className="header">
       <div className="header-left">
         <div className="logo">
-          <div className="logo-icon">P</div>
-          <span>Palantir</span>
+          <div className="logo-icon">S</div>
+          <span>Satellite & RF</span>
         </div>
         <span style={{ fontSize: 10, color: 'var(--text-muted)', letterSpacing: 1 }}>
           SATELLITE & RF INTELLIGENCE

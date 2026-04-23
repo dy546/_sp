@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Starting Palantir Satellite & RF Tracker..."
+echo "Starting Satellite & RF Intelligence..."
 echo ""
 
 # Start server
@@ -17,7 +17,7 @@ CLIENT_PID=$!
 
 echo ""
 echo "============================================"
-echo "  Palantir Satellite & RF Intelligence"
+echo "  Satellite & RF Intelligence"
 echo "============================================"
 echo "  Frontend: http://localhost:5173"
 echo "  Backend:  http://localhost:3001"

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import L from 'leaflet';
 import { fetchPropagationPositions, fetchOrbitalPath } from '../services/api';
 
 const SAT_COLORS = {
@@ -23,6 +22,8 @@ export default function MapView({ satellites, rfSources, overlays, onObjectClick
   const animFrameRef = useRef(null);
   const [propagatedPositions, setPropagatedPositions] = useState({});
   const [orbitalPaths, setOrbitalPaths] = useState({});
+
+  const L = window.L;
 
   useEffect(() => {
     if (mapInstance.current) return;

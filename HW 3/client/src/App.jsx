@@ -39,8 +39,9 @@ export default function App() {
   useEffect(() => { loadData(); }, [loadData]);
 
   useEffect(() => {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.hostname}:3001`;
+    const apiBase = import.meta.env.VITE_API_URL || '';
+    const host = apiBase ? apiBase.replace(/^http/, 'ws') : `${window.location.hostname}:3001`;
+    const wsUrl = apiBase ? host : `ws://${host}`;//${window.location.hostname}:3001`;
     let ws;
     try {
       ws = new WebSocket(wsUrl);
