@@ -50,3 +50,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+venv
+node_modules/
+dist/
+.env
+*.log
+.DS_Store
+__pycache__
