@@ -11,7 +11,7 @@ A geospatial intelligence platform for tracking satellites and radio frequency s
 - **Advanced Filtering** - Filter by status, orbit type, satellite type, service type, and search
 - **Object Linking** - Analysis endpoints connecting satellites to related RF sources
 - **Live Camera Feeds** - ISS, GOES-16, SOHO, EarthCam integration
-- **Real-time Updates** - WebSocket-based position updates every 5 seconds
+- **Real-time Updates** - Real-time position updates every 5 seconds
 
 ## Tech Stack
 
@@ -19,7 +19,15 @@ A geospatial intelligence platform for tracking satellites and radio frequency s
 - **Backend**: Node.js, Express, WebSocket, satellite.js
 - **Styling**: Custom CSS with dark intelligence theme
 
-## Quick Start
+## Deployed URLs
+
+| Component | URL |
+|-----------|-----|
+| **Frontend (Vercel)** | https://client-gamma-ecru.vercel.app |
+| **Backend (Render)** | https://satellite-and-radio-frequency-tracer.onrender.com |
+| **API Health** | https://satellite-and-radio-frequency-tracer.onrender.com/api/health |
+
+## Quick Start (Local Dev)
 
 ```bash
 # Start both servers
@@ -32,7 +40,6 @@ cd client && npm install && npx vite
 
 - Frontend: http://localhost:5173
 - Backend: http://localhost:3001
-- API Health: http://localhost:3001/api/health
 
 ## API Endpoints
 
