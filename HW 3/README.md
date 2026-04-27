@@ -11,12 +11,14 @@ A geospatial intelligence platform for tracking satellites and radio frequency s
 - **Advanced Filtering** - Filter by status, orbit type, satellite type, service type, and search
 - **Object Linking** - Analysis endpoints connecting satellites to related RF sources
 - **Live Camera Feeds** - ISS, GOES-16, SOHO, EarthCam integration
-- **Real-time Updates** - Real-time position updates every 5 seconds
+- **Real-time Updates** - WebSocket-based position updates every 5 seconds via orbital propagation
+- **Rate Limiting** - API rate limiting (100 req/min general, 30 req/min propagation)
+- **Security** - Helmet security headers, CORS restriction, input validation, graceful shutdown
 
 ## Tech Stack
 
 - **Frontend**: React 18, Vite, Leaflet, satellite.js
-- **Backend**: Node.js, Express, WebSocket, satellite.js
+- **Backend**: Node.js, Express, WebSocket, satellite.js, Helmet, express-rate-limit
 - **Styling**: Custom CSS with dark intelligence theme
 
 ## Deployed URLs

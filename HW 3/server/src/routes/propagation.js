@@ -10,8 +10,9 @@ propagationRouter.get('/positions', (req, res) => {
 
 propagationRouter.get('/path/:satId', (req, res) => {
   const { satId } = req.params;
-  const { minutes = 90, steps = 180 } = req.query;
-  const path = getOrbitalPath(satId, parseInt(minutes), parseInt(steps));
+  const min = Math.max(1, Math.min(1440, parseInt(req.query.minutes) || 90));
+  const stp = Math.max(2, Math.min(500, parseInt(req.query.steps) || 180));
+  const path = getOrbitalPath(satId, min, stp);
   if (!path.length) return res.status(404).json({ error: 'Satellite not found or no path generated' });
   res.json({ satId, path });
 });

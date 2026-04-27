@@ -40,8 +40,12 @@ export default function App() {
 
   useEffect(() => {
     const apiBase = import.meta.env.VITE_API_URL || '';
-    const host = apiBase ? apiBase.replace(/^http/, 'ws') : `${window.location.hostname}:3001`;
-    const wsUrl = apiBase ? host : `ws://${host}`;//${window.location.hostname}:3001`;
+    let wsUrl;
+    if (apiBase) {
+      wsUrl = apiBase.replace(/^https?/, 'ws');
+    } else {
+      wsUrl = `ws://${window.location.hostname}:3001`;
+    }
     let ws;
     try {
       ws = new WebSocket(wsUrl);
@@ -49,6 +53,9 @@ export default function App() {
         try {
           const msg = JSON.parse(event.data);
           if (msg.type === 'positions') {
+            if (msg.data && Object.keys(msg.data).length > 0) {
+              window.__wsPositions = msg.data;
+            }
           }
         } catch (e) {}
       };

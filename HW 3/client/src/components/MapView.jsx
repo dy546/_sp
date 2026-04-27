@@ -20,6 +20,7 @@ export default function MapView({ satellites, rfSources, overlays, onObjectClick
   const heatLayer = useRef(null);
   const labelLayer = useRef(null);
   const animFrameRef = useRef(null);
+  const loadedPathsRef = useRef(false);
   const [propagatedPositions, setPropagatedPositions] = useState({});
   const [orbitalPaths, setOrbitalPaths] = useState({});
 
@@ -47,18 +48,29 @@ export default function MapView({ satellites, rfSources, overlays, onObjectClick
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const data = await fetchPropagationPositions();
-        setPropagatedPositions(data.positions || {});
-      } catch (e) {}
-    }, 5000);
     fetchPropagationPositions().then(d => setPropagatedPositions(d.positions || {})).catch(() => {});
+    const interval = setInterval(() => {
+      const wsData = window.__wsPositions;
+      if (wsData && Object.keys(wsData).length > 0) {
+        setPropagatedPositions(wsData);
+      }
+    }, 2000);
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    if (!overlays.satellites) return;
+    if (!overlays.satellites || satellites.length === 0) return;
+    if (loadedPathsRef.current) {
+      setOrbitalPaths(prev => {
+        const updated = {};
+        for (const sat of satellites) {
+          if (prev[sat.id]) updated[sat.id] = prev[sat.id];
+        }
+        return updated;
+      });
+      return;
+    }
+    loadedPathsRef.current = true;
     const loadPaths = async () => {
       const paths = {};
       for (const sat of satellites) {
@@ -151,7 +163,7 @@ export default function MapView({ satellites, rfSources, overlays, onObjectClick
             color: color,
             opacity: 0.3,
             weight: 1,
-            dashArray: '4, 8'
+            dashArray: '4 8'
           });
           pathPolylines.push(polyline);
         }
