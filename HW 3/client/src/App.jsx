@@ -3,9 +3,9 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import MapView from './components/MapView';
 import DetailPanel from './components/DetailPanel';
-import FilterBar from './components/FilterBar';
 import StatsBar from './components/StatsBar';
 import OverlayControls from './components/OverlayControls';
+import LiveCameras from './components/LiveCameras';
 import { fetchSatellites, fetchRfSources, fetchStats } from './services/api';
 
 export default function App() {
@@ -16,8 +16,18 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('satellites');
   const [filters, setFilters] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
-  const [overlays, setOverlays] = useState({ satellites: true, rf: true, heatmap: false, labels: true });
+  const [overlays, setOverlays] = useState({ satellites: true, rf: true, heatmap: false, labels: true, cameras: false });
   const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  }, []);
 
   const loadData = useCallback(async () => {
     try {
@@ -37,31 +47,6 @@ export default function App() {
   }, [filters]);
 
   useEffect(() => { loadData(); }, [loadData]);
-
-  useEffect(() => {
-    const apiBase = import.meta.env.VITE_API_URL || '';
-    let wsUrl;
-    if (apiBase) {
-      wsUrl = apiBase.replace(/^https?/, 'ws');
-    } else {
-      wsUrl = `ws://${window.location.hostname}:3001`;
-    }
-    let ws;
-    try {
-      ws = new WebSocket(wsUrl);
-      ws.onmessage = (event) => {
-        try {
-          const msg = JSON.parse(event.data);
-          if (msg.type === 'positions') {
-            if (msg.data && Object.keys(msg.data).length > 0) {
-              window.__wsPositions = msg.data;
-            }
-          }
-        } catch (e) {}
-      };
-    } catch (e) {}
-    return () => ws?.close();
-  }, []);
 
   const handleSearch = useCallback((query) => {
     setSearchQuery(query);
@@ -87,7 +72,7 @@ export default function App() {
   if (loading) {
     return (
       <div className="app-container">
-        <Header searchQuery={searchQuery} onSearch={handleSearch} />
+        <Header searchQuery={searchQuery} onSearch={handleSearch} theme={theme} onToggleTheme={toggleTheme} />
         <div className="loading">Initializing intelligence platform...</div>
       </div>
     );
@@ -95,7 +80,7 @@ export default function App() {
 
   return (
     <div className="app-container">
-      <Header searchQuery={searchQuery} onSearch={handleSearch} />
+      <Header searchQuery={searchQuery} onSearch={handleSearch} theme={theme} onToggleTheme={toggleTheme} />
       <StatsBar stats={stats} />
       <div className="main-content">
         <Sidebar
@@ -119,6 +104,7 @@ export default function App() {
           {selectedObject && (
             <DetailPanel object={selectedObject} onClose={handleCloseDetail} />
           )}
+          <LiveCameras open={overlays.cameras} onClose={() => setOverlays(prev => ({ ...prev, cameras: false }))} />
         </div>
       </div>
     </div>

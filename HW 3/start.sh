@@ -1,18 +1,29 @@
 #!/bin/bash
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 echo "Starting Satellite & RF Intelligence..."
 echo ""
 
 # Start server
 echo "[1/2] Installing server dependencies and starting on port 3001..."
-cd "$(dirname "$0")/server"
+cd "$SCRIPT_DIR/server"
 npm install --silent
 node src/index.js &
 SERVER_PID=$!
-sleep 2
+
+# Wait for server to be ready
+echo "      Waiting for backend..."
+for i in $(seq 1 15); do
+  if curl -s http://localhost:3001/api/health > /dev/null 2>&1; then
+    echo "      Backend ready."
+    break
+  fi
+  sleep 1
+done
 
 # Start client
 echo "[2/2] Installing client dependencies and starting on port 5173..."
-cd "$(dirname "$0")/client"
+cd "$SCRIPT_DIR/client"
 npm install --silent
 npx vite --host &
 CLIENT_PID=$!

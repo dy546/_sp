@@ -26,33 +26,21 @@ export const countries = [
 
 export const cameraFeeds = [
   {
-    id: 'cam-001', name: 'ISS Live Camera', type: 'space',
-    url: 'https://www.nasa.gov/multimedia/nasatv/index.html',
-    description: 'Live video feed from the International Space Station',
+    id: 'iss-hd', name: 'ISS HDEV Camera (NASA)', type: 'space',
+    url: 'https://www.youtube-nocookie.com/embed/zPH5KtjJFaQ?autoplay=1&mute=1',
+    description: 'HD Earth Viewing from ISS (HDEV experiment)',
     source: 'NASA', status: 'active'
   },
   {
-    id: 'cam-002', name: 'GOES-16 Earth View', type: 'satellite',
-    url: 'https://www.star.nesdis.noaa.gov/GOES/index.php',
-    description: 'Full disk Earth imagery from GOES-16',
-    source: 'NOAA', status: 'active'
+    id: 'iss-sd', name: 'ISS 4K Camera (Sen)', type: 'space',
+    url: 'https://www.youtube-nocookie.com/embed/fO9e9jnhYK8?autoplay=1&mute=1',
+    description: 'Live Earth view from ISS by Sen',
+    source: 'Sen', status: 'active'
   },
   {
-    id: 'cam-003', name: 'SOHO Solar Observatory', type: 'observatory',
-    url: 'https://soho.nascom.nasa.gov/data/realtime-images.html',
-    description: 'Real-time solar imagery from SOHO spacecraft',
-    source: 'NASA/ESA', status: 'active'
-  },
-  {
-    id: 'cam-004', name: 'EarthCam Network', type: 'terrestrial',
-    url: 'https://www.earthcam.com/',
-    description: 'Global network of terrestrial webcams',
-    source: 'EarthCam', status: 'active'
-  },
-  {
-    id: 'cam-005', name: 'HD Earth from ISS', type: 'space',
-    url: 'https://www.youtube.com/watch?v=86YLFOog4GM',
-    description: 'High definition Earth view from ISS cameras',
+    id: 'iss-yt', name: 'ISS SD Camera (NASA)', type: 'space',
+    url: 'https://www.youtube-nocookie.com/embed/sWasdbDVNvc?autoplay=1&mute=1',
+    description: 'Official NASA ISS live stream on YouTube',
     source: 'NASA', status: 'active'
   }
 ];

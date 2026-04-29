@@ -398,5 +398,405 @@ export const rfSources = [
     owner: 'SpaceX',
     activeStations: 5000, lastUpdated: '2024-03-15',
     coordinates: { lat: 0, lng: 0 }
+  },
+  {
+    id: 'rf-051', country: 'China', band: '5G n78', freqStart: 3300, freqEnd: 3800, unit: 'MHz',
+    service: 'Mobile', allocation: '5G NR Mid-Band',
+    licenseInfo: 'MIIT China', power: '200W-500W',
+    owner: 'China Mobile, China Telecom, China Unicom',
+    activeStations: 2300000, lastUpdated: '2024-04-01',
+    coordinates: { lat: 39.9, lng: 116.4 }
+  },
+  {
+    id: 'rf-052', country: 'USA', band: 'CBRS', freqStart: 3550, freqEnd: 3700, unit: 'MHz',
+    service: 'Data', allocation: 'Citizens Broadband Radio Service',
+    licenseInfo: 'FCC Part 96', power: '1W-50W',
+    owner: 'Various (SAS-managed)',
+    activeStations: 150000, lastUpdated: '2024-03-01',
+    coordinates: { lat: 39.0, lng: -98.0 }
+  },
+  {
+    id: 'rf-053', country: 'South Korea', band: '5G n257', freqStart: 26500, freqEnd: 29500, unit: 'MHz',
+    service: 'Mobile', allocation: '5G mmWave',
+    licenseInfo: 'MSIT Korea', power: '1W-10W',
+    owner: 'SK Telecom, KT, LG U+',
+    activeStations: 185000, lastUpdated: '2024-04-01',
+    coordinates: { lat: 37.6, lng: 127.0 }
+  },
+  {
+    id: 'rf-054', country: 'Australia', band: '4G/5G n1', freqStart: 1920, freqEnd: 1980, unit: 'MHz',
+    service: 'Mobile', allocation: 'IMT FDD Uplink',
+    licenseInfo: 'ACMA', power: '10W-200W',
+    owner: 'Telstra, Optus, Vodafone Australia',
+    activeStations: 45000, lastUpdated: '2024-03-15',
+    coordinates: { lat: -33.9, lng: 151.2 }
+  },
+  {
+    id: 'rf-055', country: 'Indonesia', band: '4G LTE Band 3', freqStart: 1710, freqEnd: 1785, unit: 'MHz',
+    service: 'Mobile', allocation: 'IMT FDD Uplink',
+    licenseInfo: 'Kominfo', power: '10W-100W',
+    owner: 'Telkomsel, Indosat, XL Axiata',
+    activeStations: 320000, lastUpdated: '2024-04-01',
+    coordinates: { lat: -6.2, lng: 106.8 }
+  },
+  {
+    id: 'rf-056', country: 'Canada', band: 'AWS-3', freqStart: 1695, freqEnd: 1710, unit: 'MHz',
+    service: 'Mobile', allocation: 'Advanced Wireless Services',
+    licenseInfo: 'ISED Canada', power: '10W-100W',
+    owner: 'Rogers, Bell, Telus',
+    activeStations: 62000, lastUpdated: '2024-02-15',
+    coordinates: { lat: 43.7, lng: -79.4 }
+  },
+  {
+    id: 'rf-057', country: 'Nigeria', band: '4G LTE Band 20', freqStart: 791, freqEnd: 821, unit: 'MHz',
+    service: 'Mobile', allocation: 'Digital Dividend',
+    licenseInfo: 'NCC Nigeria', power: '5W-50W',
+    owner: 'MTN Nigeria, Airtel, Glo',
+    activeStations: 42000, lastUpdated: '2024-03-01',
+    coordinates: { lat: 6.5, lng: 3.4 }
+  },
+  {
+    id: 'rf-058', country: 'UK', band: '5G n78', freqStart: 3400, freqEnd: 3800, unit: 'MHz',
+    service: 'Mobile', allocation: '5G NR Mid-Band',
+    licenseInfo: 'Ofcom', power: '100W-500W',
+    owner: 'EE, Vodafone, Three, O2',
+    activeStations: 35000, lastUpdated: '2024-04-01',
+    coordinates: { lat: 51.5, lng: -0.1 }
+  },
+  {
+    id: 'rf-059', country: 'India', band: '5G n78', freqStart: 3300, freqEnd: 3670, unit: 'MHz',
+    service: 'Mobile', allocation: '5G NR Mid-Band',
+    licenseInfo: 'DoT India', power: '100W-500W',
+    owner: 'Reliance Jio, Airtel, Vi',
+    activeStations: 450000, lastUpdated: '2024-04-15',
+    coordinates: { lat: 28.6, lng: 77.2 }
+  },
+  {
+    id: 'rf-060', country: 'Germany', band: '5G n78', freqStart: 3400, freqEnd: 3700, unit: 'MHz',
+    service: 'Mobile', allocation: '5G NR Mid-Band',
+    licenseInfo: 'Bundesnetzagentur', power: '100W-500W',
+    owner: 'Deutsche Telekom, Vodafone, O2',
+    activeStations: 48000, lastUpdated: '2024-04-01',
+    coordinates: { lat: 52.5, lng: 13.4 }
+  },
+  {
+    id: 'rf-061', country: 'USA', band: 'LoRa ISM', freqStart: 902, freqEnd: 928, unit: 'MHz',
+    service: 'Data', allocation: 'ISM Band / LoRaWAN',
+    licenseInfo: 'FCC Part 15 (unlicensed)', power: '100mW-1W',
+    owner: 'Various (Helium, The Things Network)',
+    activeStations: 950000, lastUpdated: '2024-03-15',
+    coordinates: { lat: 37.8, lng: -122.4 }
+  },
+  {
+    id: 'rf-062', country: 'EU', band: 'LoRa ISM', freqStart: 863, freqEnd: 870, unit: 'MHz',
+    service: 'Data', allocation: 'SRD / LoRaWAN',
+    licenseInfo: 'ETSI EN 300 220', power: '25mW-500mW',
+    owner: 'Various (The Things Network, Helium)',
+    activeStations: 1200000, lastUpdated: '2024-03-15',
+    coordinates: { lat: 48.9, lng: 2.3 }
+  },
+  {
+    id: 'rf-063', country: 'International', band: 'Iridium L-band', freqStart: 1616, freqEnd: 1626.5, unit: 'MHz',
+    service: 'Mobile', allocation: 'Mobile Satellite Service',
+    licenseInfo: 'FCC / ITU RR', power: '1W-5W (handset)',
+    owner: 'Iridium Communications',
+    activeStations: 600000, lastUpdated: '2024-01-15',
+    coordinates: { lat: 38.9, lng: -77.0 }
+  },
+  {
+    id: 'rf-064', country: 'International', band: 'Globalstar S-band', freqStart: 2483.5, freqEnd: 2500, unit: 'MHz',
+    service: 'Mobile', allocation: 'Mobile Satellite Service',
+    licenseInfo: 'FCC / ITU RR', power: '1W-5W (handset)',
+    owner: 'Globalstar',
+    activeStations: 350000, lastUpdated: '2024-02-01',
+    coordinates: { lat: 29.5, lng: -98.5 }
+  },
+  {
+    id: 'rf-065', country: 'International', band: 'GPS L1 C/A', freqStart: 1575.42, freqEnd: 1575.42, unit: 'MHz',
+    service: 'Navigation', allocation: 'RNSS',
+    licenseInfo: 'ITU RR', power: '50W (satellite)',
+    owner: 'US Space Force',
+    activeStations: 4000000000, lastUpdated: '2024-01-01',
+    coordinates: { lat: 40, lng: -105 }
+  },
+  {
+    id: 'rf-066', country: 'International', band: 'Galileo E1', freqStart: 1575.42, freqEnd: 1575.42, unit: 'MHz',
+    service: 'Navigation', allocation: 'RNSS',
+    licenseInfo: 'ITU RR', power: '50W (satellite)',
+    owner: 'ESA / EU Agency for the Space Programme',
+    activeStations: 3000000000, lastUpdated: '2024-01-01',
+    coordinates: { lat: 50, lng: 8 }
+  },
+  {
+    id: 'rf-067', country: 'International', band: 'ADS-B', freqStart: 1090, freqEnd: 1090, unit: 'MHz',
+    service: 'Aviation', allocation: 'Aeronautical Radionavigation',
+    licenseInfo: 'ICAO Annex 10', power: '50W-500W (aircraft)',
+    owner: 'All commercial aircraft',
+    activeStations: 25000, lastUpdated: '2024-03-01',
+    coordinates: { lat: 40, lng: -75 }
+  },
+  {
+    id: 'rf-068', country: 'International', band: 'VHF Airband', freqStart: 118, freqEnd: 136.975, unit: 'MHz',
+    service: 'Aviation', allocation: 'Aeronautical Mobile (R)',
+    licenseInfo: 'ICAO Annex 10', power: '10W-100W',
+    owner: 'Air Traffic Control, Airlines',
+    activeStations: 45000, lastUpdated: '2024-03-01',
+    coordinates: { lat: 51.5, lng: -0.5 }
+  },
+  {
+    id: 'rf-069', country: 'International', band: 'AIS VHF', freqStart: 161.975, freqEnd: 162.025, unit: 'MHz',
+    service: 'Maritime', allocation: 'Maritime Mobile',
+    licenseInfo: 'ITU-R M.1371', power: '2W-12.5W',
+    owner: 'All SOLAS vessels',
+    activeStations: 350000, lastUpdated: '2024-03-01',
+    coordinates: { lat: 0, lng: 0 }
+  },
+  {
+    id: 'rf-070', country: 'International', band: 'SATCOM UHF Mil', freqStart: 243, freqEnd: 270, unit: 'MHz',
+    service: 'Mobile', allocation: 'Military Satellite UHF',
+    licenseInfo: 'NATO / National', power: '5W-100W',
+    owner: 'US DoD, NATO allies',
+    activeStations: 25000, lastUpdated: '2024-02-01',
+    coordinates: { lat: 38.9, lng: -77.0 }
+  },
+  {
+    id: 'rf-071', country: 'International', band: 'MUOS', freqStart: 300, freqEnd: 3200, unit: 'MHz',
+    service: 'Mobile', allocation: 'Military Mobile Satellite (WCDMA)',
+    licenseInfo: 'US DoD', power: '1W-10W (handset)',
+    owner: 'US Space Force / Navy',
+    activeStations: 35000, lastUpdated: '2024-03-01',
+    coordinates: { lat: 21.3, lng: -157.8 }
+  },
+  {
+    id: 'rf-072', country: 'USA', band: 'PCS', freqStart: 1850, freqEnd: 1990, unit: 'MHz',
+    service: 'Mobile', allocation: 'Personal Communications Service',
+    licenseInfo: 'FCC Part 24', power: '10W-100W',
+    owner: 'T-Mobile, AT&T, Verizon',
+    activeStations: 380000, lastUpdated: '2024-03-01',
+    coordinates: { lat: 40.7, lng: -74.0 }
+  },
+  {
+    id: 'rf-073', country: 'Russia', band: '4G LTE Band 7', freqStart: 2500, freqEnd: 2690, unit: 'MHz',
+    service: 'Mobile', allocation: 'IMT Extension Band',
+    licenseInfo: 'Roskomnadzor', power: '10W-200W',
+    owner: 'MTS, MegaFon, Beeline, Tele2',
+    activeStations: 210000, lastUpdated: '2024-03-15',
+    coordinates: { lat: 55.8, lng: 37.6 }
+  },
+  {
+    id: 'rf-074', country: 'Mexico', band: '4G LTE AWS', freqStart: 1710, freqEnd: 1755, unit: 'MHz',
+    service: 'Mobile', allocation: 'AWS-1',
+    licenseInfo: 'IFT Mexico', power: '10W-100W',
+    owner: 'Telcel, AT&T Mexico, Movistar',
+    activeStations: 95000, lastUpdated: '2024-03-01',
+    coordinates: { lat: 19.4, lng: -99.1 }
+  },
+  {
+    id: 'rf-075', country: 'Thailand', band: '4G/5G n41', freqStart: 2496, freqEnd: 2690, unit: 'MHz',
+    service: 'Mobile', allocation: 'TDD BRS/EBS',
+    licenseInfo: 'NBTC Thailand', power: '10W-200W',
+    owner: 'AIS, TrueMove, dtac',
+    activeStations: 85000, lastUpdated: '2024-04-01',
+    coordinates: { lat: 13.8, lng: 100.5 }
+  },
+  {
+    id: 'rf-076', country: 'Saudi Arabia', band: '5G n78', freqStart: 3400, freqEnd: 3800, unit: 'MHz',
+    service: 'Mobile', allocation: '5G NR Mid-Band',
+    licenseInfo: 'CITC Saudi', power: '100W-500W',
+    owner: 'Saudi Telecom, Mobily, Zain',
+    activeStations: 55000, lastUpdated: '2024-04-01',
+    coordinates: { lat: 24.7, lng: 46.7 }
+  },
+  {
+    id: 'rf-077', country: 'Argentina', band: '4G LTE Band 28', freqStart: 703, freqEnd: 748, unit: 'MHz',
+    service: 'Mobile', allocation: 'APT700',
+    licenseInfo: 'ENACOM', power: '10W-100W',
+    owner: 'Claro, Movistar, Personal',
+    activeStations: 28000, lastUpdated: '2024-02-15',
+    coordinates: { lat: -34.6, lng: -58.4 }
+  },
+  {
+    id: 'rf-078', country: 'Turkey', band: '4.5G LTE Band 3', freqStart: 1710, freqEnd: 1785, unit: 'MHz',
+    service: 'Mobile', allocation: 'DCS 1800',
+    licenseInfo: 'BTK Turkey', power: '10W-100W',
+    owner: 'Turkcell, Vodafone Turkey, Turk Telekom',
+    activeStations: 75000, lastUpdated: '2024-03-01',
+    coordinates: { lat: 41.0, lng: 28.9 }
+  },
+  {
+    id: 'rf-079', country: 'Brazil', band: '5G n78', freqStart: 3300, freqEnd: 3700, unit: 'MHz',
+    service: 'Mobile', allocation: '5G NR Mid-Band',
+    licenseInfo: 'ANATEL', power: '100W-500W',
+    owner: 'Vivo, Claro, TIM',
+    activeStations: 78000, lastUpdated: '2024-04-01',
+    coordinates: { lat: -23.5, lng: -46.6 }
+  },
+  {
+    id: 'rf-080', country: 'South Africa', band: '4G LTE Band 20', freqStart: 791, freqEnd: 821, unit: 'MHz',
+    service: 'Mobile', allocation: 'Digital Dividend',
+    licenseInfo: 'ICASA', power: '10W-100W',
+    owner: 'Vodacom, MTN, Cell C, Telkom',
+    activeStations: 32000, lastUpdated: '2024-03-01',
+    coordinates: { lat: -26.2, lng: 28.0 }
+  },
+  {
+    id: 'rf-081', country: 'International', band: 'LEO Satcom Ka-band', freqStart: 17800, freqEnd: 20200, unit: 'MHz',
+    service: 'Data', allocation: 'FSS (Non-GSO)',
+    licenseInfo: 'FCC / ITU RR', power: '1W-10W (satellite)',
+    owner: 'SpaceX Starlink, OneWeb, Amazon Kuiper',
+    activeStations: 8000, lastUpdated: '2024-04-01',
+    coordinates: { lat: 33.9, lng: -118.4 }
+  },
+  {
+    id: 'rf-082', country: 'International', band: 'Cospas-Sarsat', freqStart: 406, freqEnd: 406.1, unit: 'MHz',
+    service: 'Public Safety', allocation: 'Search and Rescue',
+    licenseInfo: 'ITU RR / Cospas-Sarsat', power: '5W (beacon)',
+    owner: 'International Cospas-Sarsat Programme',
+    activeStations: 500000, lastUpdated: '2024-01-01',
+    coordinates: { lat: 48.9, lng: 2.3 }
+  },
+  {
+    id: 'rf-083', country: 'International', band: 'Inmarsat L-band', freqStart: 1525, freqEnd: 1660.5, unit: 'MHz',
+    service: 'Mobile', allocation: 'Mobile Satellite Service',
+    licenseInfo: 'Inmarsat / ITU RR', power: '1W-10W (terminal)',
+    owner: 'Inmarsat (Viasat)',
+    activeStations: 120000, lastUpdated: '2024-02-15',
+    coordinates: { lat: 51.5, lng: -0.1 }
+  },
+  {
+    id: 'rf-084', country: 'OAE', band: 'Thuraya L-band', freqStart: 1525, freqEnd: 1661, unit: 'MHz',
+    service: 'Mobile', allocation: 'Mobile Satellite Service',
+    licenseInfo: 'UAE TRA / ITU RR', power: '100mW-2W (handset)',
+    owner: 'Thuraya Telecommunications',
+    activeStations: 350000, lastUpdated: '2024-02-01',
+    coordinates: { lat: 24.5, lng: 54.4 }
+  },
+  {
+    id: 'rf-085', country: 'International', band: 'S-band Telemetry', freqStart: 2200, freqEnd: 2290, unit: 'MHz',
+    service: 'Data', allocation: 'Space Operations',
+    licenseInfo: 'ITU RR / CCSDS', power: '1W-20W (satellite)',
+    owner: 'NASA, ESA, JAXA, CNSA, ISRO',
+    activeStations: 250, lastUpdated: '2024-01-15',
+    coordinates: { lat: 0, lng: 0 }
+  },
+  {
+    id: 'rf-086', country: 'International', band: 'DSC VHF', freqStart: 156.525, freqEnd: 156.525, unit: 'MHz',
+    service: 'Maritime', allocation: 'VHF Channel 70',
+    licenseInfo: 'ITU-R M.493', power: '1W-25W',
+    owner: 'All GMDSS vessels',
+    activeStations: 250000, lastUpdated: '2024-01-01',
+    coordinates: { lat: 0, lng: 0 }
+  },
+  {
+    id: 'rf-087', country: 'International', band: 'Radio Astronomy', freqStart: 1400, freqEnd: 1427, unit: 'MHz',
+    service: 'Data', allocation: 'Radio Astronomy (Protected)',
+    licenseInfo: 'ITU RR (passive)', power: 'N/A (receive only)',
+    owner: 'Various observatories worldwide',
+    activeStations: 120, lastUpdated: '2024-01-01',
+    coordinates: { lat: 34.1, lng: -118.0 }
+  },
+  {
+    id: 'rf-088', country: 'USA', band: 'Weather Radar S-band', freqStart: 2700, freqEnd: 3000, unit: 'MHz',
+    service: 'Aviation', allocation: 'Radiolocation / Weather',
+    licenseInfo: 'FCC / NTIA', power: '500kW-1MW (peak)',
+    owner: 'NOAA / NWS (NEXRAD)',
+    activeStations: 160, lastUpdated: '2024-03-01',
+    coordinates: { lat: 35.3, lng: -98.6 }
+  },
+  {
+    id: 'rf-089', country: 'International', band: 'Cospas-Sarsat 121.5', freqStart: 121.5, freqEnd: 121.5, unit: 'MHz',
+    service: 'Public Safety', allocation: 'Aeronautical Emergency',
+    licenseInfo: 'ICAO / ITU RR', power: '50mW (beacon)',
+    owner: 'All civil aircraft',
+    activeStations: 300000, lastUpdated: '2024-01-01',
+    coordinates: { lat: 0, lng: 0 }
+  },
+  {
+    id: 'rf-090', country: 'Japan', band: '4G LTE Band 1', freqStart: 1920, freqEnd: 1980, unit: 'MHz',
+    service: 'Mobile', allocation: 'IMT Core Band',
+    licenseInfo: 'MIC Japan', power: '10W-200W',
+    owner: 'NTT Docomo, KDDI, SoftBank, Rakuten',
+    activeStations: 280000, lastUpdated: '2024-04-01',
+    coordinates: { lat: 35.7, lng: 139.7 }
+  },
+  {
+    id: 'rf-091', country: 'France', band: 'TETRA', freqStart: 380, freqEnd: 400, unit: 'MHz',
+    service: 'Public Safety', allocation: 'PPDR',
+    licenseInfo: 'ARCEP', power: '10W-25W',
+    owner: 'French Government (RUBIS network)',
+    activeStations: 8000, lastUpdated: '2024-02-01',
+    coordinates: { lat: 48.9, lng: 2.3 }
+  },
+  {
+    id: 'rf-092', country: 'Egypt', band: '4G LTE Band 1', freqStart: 1920, freqEnd: 1980, unit: 'MHz',
+    service: 'Mobile', allocation: 'IMT Core Band',
+    licenseInfo: 'NTRA Egypt', power: '10W-100W',
+    owner: 'Vodafone Egypt, Orange, Etisalat, WE',
+    activeStations: 38000, lastUpdated: '2024-03-01',
+    coordinates: { lat: 30.0, lng: 31.2 }
+  },
+  {
+    id: 'rf-093', country: 'International', band: 'Wi-Fi 6E', freqStart: 5925, freqEnd: 7125, unit: 'MHz',
+    service: 'Data', allocation: 'Unlicensed 6 GHz',
+    licenseInfo: 'FCC Part 15 / ETSI (unlicensed)', power: '100mW-1W',
+    owner: 'Unlicensed (public)',
+    activeStations: 80000000, lastUpdated: '2024-03-15',
+    coordinates: { lat: 39.0, lng: -98.0 }
+  },
+  {
+    id: 'rf-094', country: 'International', band: 'Wi-Fi 7 (320 MHz)', freqStart: 5925, freqEnd: 7125, unit: 'MHz',
+    service: 'Data', allocation: '6 GHz Wi-Fi 7',
+    licenseInfo: 'FCC / ETSI (unlicensed)', power: '100mW-1W',
+    owner: 'Unlicensed (public)',
+    activeStations: 5000000, lastUpdated: '2024-04-01',
+    coordinates: { lat: 37.8, lng: -122.4 }
+  },
+  {
+    id: 'rf-095', country: 'UAE', band: '5G n78', freqStart: 3300, freqEnd: 3800, unit: 'MHz',
+    service: 'Mobile', allocation: '5G NR Mid-Band',
+    licenseInfo: 'TDRA UAE', power: '100W-500W',
+    owner: 'Etisalat by e&, du',
+    activeStations: 22000, lastUpdated: '2024-04-01',
+    coordinates: { lat: 25.2, lng: 55.3 }
+  },
+  {
+    id: 'rf-096', country: 'Philippines', band: '4G LTE Band 28', freqStart: 703, freqEnd: 748, unit: 'MHz',
+    service: 'Mobile', allocation: 'APT700',
+    licenseInfo: 'NTC Philippines', power: '10W-100W',
+    owner: 'Globe, Smart, Dito',
+    activeStations: 42000, lastUpdated: '2024-03-01',
+    coordinates: { lat: 14.6, lng: 121.0 }
+  },
+  {
+    id: 'rf-097', country: 'International', band: 'IRNSS L5', freqStart: 1176.45, freqEnd: 1176.45, unit: 'MHz',
+    service: 'Navigation', allocation: 'RNSS',
+    licenseInfo: 'ITU RR', power: '50W (satellite)',
+    owner: 'ISRO',
+    activeStations: 1500000000, lastUpdated: '2024-01-01',
+    coordinates: { lat: 12.5, lng: 77.5 }
+  },
+  {
+    id: 'rf-098', country: 'International', band: 'QZSS L1 C/A', freqStart: 1575.42, freqEnd: 1575.42, unit: 'MHz',
+    service: 'Navigation', allocation: 'RNSS',
+    licenseInfo: 'ITU RR', power: '50W (satellite)',
+    owner: 'JAXA / Japan Cabinet Office',
+    activeStations: 500000000, lastUpdated: '2024-01-01',
+    coordinates: { lat: 35.7, lng: 139.7 }
+  },
+  {
+    id: 'rf-099', country: 'International', band: 'Inter-Satellite Link V-band', freqStart: 59000, freqEnd: 64000, unit: 'MHz',
+    service: 'Data', allocation: 'Inter-Satellite Service',
+    licenseInfo: 'ITU RR / FCC', power: '1W-5W (satellite)',
+    owner: 'Starlink, OneWeb, Kuiper, Telesat',
+    activeStations: 15000, lastUpdated: '2024-04-01',
+    coordinates: { lat: 0, lng: 0 }
+  },
+  {
+    id: 'rf-100', country: 'International', band: 'Emergency Locator', freqStart: 406, freqEnd: 406.1, unit: 'MHz',
+    service: 'Public Safety', allocation: 'MSS / Safety of Life',
+    licenseInfo: 'ITU RR / Cospas-Sarsat', power: '5W',
+    owner: 'All aircraft and maritime vessels',
+    activeStations: 1200000, lastUpdated: '2024-01-01',
+    coordinates: { lat: 0, lng: 0 }
   }
 ];

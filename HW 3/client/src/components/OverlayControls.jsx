@@ -27,6 +27,12 @@ export default function OverlayControls({ overlays, onToggle }) {
       >
         Labels
       </button>
+      <button
+        className={`overlay-btn ${overlays.cameras ? 'active' : ''}`}
+        onClick={() => onToggle('cameras')}
+      >
+        Live Cams
+      </button>
     </div>
   );
 }
