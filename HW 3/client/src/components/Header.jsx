@@ -1,16 +1,12 @@
 import React from 'react';
 
-export default function Header({ searchQuery, onSearch }) {
+export default function Header({ searchQuery, onSearch, theme, onToggleTheme }) {
   return (
     <header className="header">
       <div className="header-left">
         <div className="logo">
-          <div className="logo-icon">S</div>
-          <span>Satellite & RF</span>
+          <span>Satellite & Radio Frequency intelligence</span>
         </div>
-        <span style={{ fontSize: 10, color: 'var(--text-muted)', letterSpacing: 1 }}>
-          SATELLITE & RF INTELLIGENCE
-        </span>
       </div>
       <div className="header-center">
         <input
@@ -22,13 +18,12 @@ export default function Header({ searchQuery, onSearch }) {
         />
       </div>
       <div className="header-right">
-        <span style={{ fontSize: 10, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-          {new Date().toISOString().replace('T', ' ').slice(0, 19)}Z
+        <button className="theme-toggle" onClick={onToggleTheme} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
+          {theme === 'dark' ? '\u2600' : '\u263D'}
+        </button>
+        <span style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+          {new Date().toISOString().replace('T', ' ').slice(0, 19)}
         </span>
-        <div className="live-indicator" style={{ margin: 0 }}>
-          <div className="live-dot" />
-          <span style={{ fontSize: 10 }}>LIVE</span>
-        </div>
       </div>
     </header>
   );

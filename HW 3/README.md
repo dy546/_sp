@@ -6,20 +6,21 @@ A geospatial intelligence platform for tracking satellites and radio frequency s
 
 - **Real-time Satellite Tracking** - Orbital propagation using satellite.js with TLE data
 - **Interactive Geospatial Map** - Leaflet-based dark map with orbital path lines, heatmap overlay, and labels
-- **50 RF Sources** - Radio frequency allocations across 23 countries with spectrum visualization
-- **25 Satellites** - Full orbital parameters, frequencies, timeline history, and live feed links
+- **100 RF Sources** - Radio frequency allocations across 26 countries with spectrum visualization
+- **50 Satellites** - Full orbital parameters, frequencies, timeline history, and live feed links
 - **Advanced Filtering** - Filter by status, orbit type, satellite type, service type, and search
 - **Object Linking** - Analysis endpoints connecting satellites to related RF sources
 - **Live Camera Feeds** - ISS, GOES-16, SOHO, EarthCam integration
-- **Real-time Updates** - WebSocket-based position updates every 5 seconds via orbital propagation
+- **Orbital Propagation** - Satellite position and path computation via satellite.js (REST API)
+- **Light/Dark Theme** - Toggleable dark intelligence theme with light mode alternative
 - **Rate Limiting** - API rate limiting (100 req/min general, 30 req/min propagation)
 - **Security** - Helmet security headers, CORS restriction, input validation, graceful shutdown
 
 ## Tech Stack
 
 - **Frontend**: React 18, Vite, Leaflet, satellite.js
-- **Backend**: Node.js, Express, WebSocket, satellite.js, Helmet, express-rate-limit
-- **Styling**: Custom CSS with dark intelligence theme
+- **Backend**: Node.js, Express, satellite.js, Helmet, express-rate-limit
+- **Styling**: Custom CSS with dark/light intelligence theme
 
 ## Deployed URLs
 

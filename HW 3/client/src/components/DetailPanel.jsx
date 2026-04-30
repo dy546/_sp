@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { fetchAnalysisLinks, fetchCameras } from '../services/api';
+import { fetchAnalysisLinks } from '../services/api';
 
 export default function DetailPanel({ object, onClose }) {
   const [links, setLinks] = useState(null);
-  const [cameras, setCameras] = useState([]);
   const isSatellite = !!object.currentPosition;
 
   useEffect(() => {
     if (isSatellite) {
       fetchAnalysisLinks(object.id).then(setLinks).catch(() => {});
     }
-    fetchCameras().then(setCameras).catch(() => {});
   }, [object.id, isSatellite]);
 
   return (
@@ -29,16 +27,16 @@ export default function DetailPanel({ object, onClose }) {
 
       <div className="detail-body">
         {isSatellite ? (
-          <SatelliteDetail satellite={object} links={links} cameras={cameras} />
+          <SatelliteDetail satellite={object} links={links} />
         ) : (
-          <RFDetail rf={object} cameras={cameras} />
+          <RFDetail rf={object} />
         )}
       </div>
     </div>
   );
 }
 
-function SatelliteDetail({ satellite, links, cameras }) {
+function SatelliteDetail({ satellite, links }) {
   return (
     <>
       <div className="detail-section">
@@ -213,18 +211,43 @@ function SatelliteDetail({ satellite, links, cameras }) {
   );
 }
 
-function RFDetail({ rf, cameras }) {
+function RFDetail({ rf }) {
   const getBandColor = (band) => {
     const colors = {
-      'FM': '#ff8800', 'AM': '#ff6600', 'UHF TV': '#ffcc00',
+      'FM': '#ff8800', 'AM': '#ff6600', 'UHF': '#ffcc00',
       'Cellular': '#8844ff', 'Wi-Fi': '#00ff88', '5G': '#4a7aff',
-      'DAB': '#00d4ff', 'ISDB-T': '#ff3355', 'DVB-T2': '#aa44ff',
-      'DTMB': '#00ccaa', 'TNT': '#ff8800', 'VHF TV': '#ff6600',
+      'DAB': '#00d4ff', 'ISDB': '#ff3355', 'DVB': '#aa44ff',
+      'DTMB': '#00ccaa', 'TNT': '#ff8800', 'VHF': '#ff6600',
       'Amateur': '#00ff88', 'Maritime': '#4a7aff', 'Aviation': '#00d4ff',
-      'GNSS': '#8844ff', 'Public Safety': '#ff3355', 'Shortwave': '#ffcc00'
+      'GNSS': '#8844ff', 'Public Safety': '#ff3355', 'Shortwave': '#ffcc00',
+      'Starlink': '#00d4ff', 'Radar': '#ff3355', 'Satellite': '#8844ff'
     };
-    const key = Object.keys(colors).find(k => band.includes(k));
-    return colors[key] || '#8888aa';
+    const key = Object.keys(colors).find(k => band.toLowerCase().includes(k.toLowerCase()));
+    return colors[key] || '#4a7aff';
+  };
+
+  const normalizeFreq = (freq, unit) => unit === 'kHz' ? freq / 1000 : unit === 'GHz' ? freq * 1000 : freq;
+  const freqStartMHz = normalizeFreq(rf.freqStart, rf.unit);
+  const freqEndMHz = normalizeFreq(rf.freqEnd, rf.unit);
+  const maxMHz = 100000;
+
+  const toPercent = (mhz) => Math.max(0, Math.min(100, (Math.log10(mhz + 1) / Math.log10(maxMHz + 1)) * 100));
+  const left = toPercent(freqStartMHz);
+  const width = Math.max(2, toPercent(freqEndMHz) - left);
+  const color = getBandColor(rf.band);
+
+  const ticks = [
+    { label: '0 Hz', mhz: 0 },
+    { label: '100 kHz', mhz: 0.1 },
+    { label: '10 MHz', mhz: 10 },
+    { label: '1 GHz', mhz: 1000 },
+    { label: '100 GHz', mhz: 100000 }
+  ];
+
+  const formatFreq = (mhz) => {
+    if (mhz >= 1000) return `${(mhz / 1000).toFixed(1)} GHz`;
+    if (mhz >= 1) return `${mhz.toFixed(0)} MHz`;
+    return `${(mhz * 1000).toFixed(0)} kHz`;
   };
 
   return (
@@ -285,41 +308,52 @@ function RFDetail({ rf, cameras }) {
           <div
             className="spectrum-fill"
             style={{
-              left: `${Math.max(0, (Math.log10(rf.freqStart + 1) / 5) * 100)}%`,
-              width: `${Math.max(2, ((Math.log10(rf.freqEnd + 1) - Math.log10(rf.freqStart + 1)) / 5) * 100)}%`,
-              background: getBandColor(rf.band)
+              left: `${left}%`,
+              width: `${width}%`,
+              background: color
             }}
           />
+          <div style={{
+            position: 'absolute', inset: 0,
+            display: 'flex', alignItems: 'center',
+            padding: '0 8px', zIndex: 1,
+            pointerEvents: 'none'
+          }}>
+            <span style={{
+              fontSize: 10, fontWeight: 700, fontFamily: 'var(--font-mono)',
+              color: '#fff', textShadow: '0 1px 3px rgba(0,0,0,0.7)',
+              whiteSpace: 'nowrap'
+            }}>
+              {formatFreq(freqStartMHz)} – {formatFreq(freqEndMHz)}
+            </span>
+          </div>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: 'var(--text-muted)' }}>
-          <span>0 Hz</span>
-          <span>100 kHz</span>
-          <span>10 MHz</span>
-          <span>1 GHz</span>
-          <span>100 GHz</span>
-        </div>
-      </div>
-
-      {cameras.length > 0 && (
-        <div className="detail-section">
-          <div className="detail-section-title">Available Feeds</div>
-          {cameras.map(cam => (
-            <div key={cam.id} style={{ padding: '6px 0', borderBottom: '1px solid var(--border-color)' }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>{cam.name}</div>
-              <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 2 }}>{cam.description}</div>
-              <a
-                href={cam.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn"
-                style={{ marginTop: 4, textDecoration: 'none', fontSize: 10 }}
-              >
-                View Feed
-              </a>
-            </div>
+        <div style={{ position: 'relative', height: 14, marginTop: 4 }}>
+          {ticks.map((t, i) => (
+            <span key={i} style={{
+              position: 'absolute',
+              left: `${toPercent(t.mhz)}%`,
+              transform: 'translateX(-50%)',
+              fontSize: 9, fontFamily: 'var(--font-mono)',
+              color: i === 0 || i === ticks.length - 1 ? 'var(--text-muted)' : 'var(--text-muted)',
+              opacity: 0.7
+            }}>
+              {t.label}
+            </span>
           ))}
         </div>
-      )}
+        <div style={{ position: 'relative', height: 4, marginBottom: 4 }}>
+          {ticks.map((t, i) => (
+            <span key={i} style={{
+              position: 'absolute',
+              left: `${toPercent(t.mhz)}%`,
+              width: 1, height: 4,
+              background: 'var(--text-muted)',
+              opacity: 0.5
+            }} />
+          ))}
+        </div>
+      </div>
     </>
   );
 }
