@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Programming Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        nav { flex-wrap: wrap; padding: 10px; }
+        nav ul { flex-wrap: wrap; justify-content: center; gap: 10px; }
+        nav ul li a { padding: 10px 15px; border-radius: 5px; }
+        h2 { margin-top: 40px; }
+        h3 { color: var(--text-color); margin-top: 20px; margin-bottom: 10px; }
+        .chapter { margin-bottom: 50px; background-color: var(--card-bg); padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .appendix dt { font-weight: bold; color: var(--accent-color); margin-top: 10px; }
+        .appendix dd { margin-bottom: 10px; margin-left: 20px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>System Programming</h1>
+            <p>A Comprehensive Guide to the Bridge Between Software and Hardware</p>
+            <button id="theme-toggle">Toggle Dark Mode</button>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#ch1">Ch 1: Overview</a></li>
+            <li><a href="#ch2">Ch 2: Assembly</a></li>
+            <li><a href="#ch3">Ch 3: Compilers</a></li>
+            <li><a href="#ch4">Ch 4: OS Kernel</a></li>
+            <li><a href="#ch5">Ch 5: Linkers</a></li>
+            <li><a href="#ch6">Ch 6: Tools</a></li>
+            <li><a href="#ch7">Ch 7: Security</a></li>
+            <li><a href="#ch8">Ch 8: Advanced</a></li>
+            <li><a href="#appendix">Appendix</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="ch1" class="chapter">
+            <h2>Chapter 1: Overview of System Programming</h2>
+            
+            <h3>1.1 What is System Programming?</h3>
+            <p>System programming is a field in computer science dedicated to writing software that provides services to the computer hardware and other software. Unlike general application programming, system programming interacts directly with the hardware, providing infrastructure software such as operating systems, compilers, and device drivers. The core goals are efficiency and control, often requiring low-level resource management, memory manipulation, and hardware abstraction.</p>
+            <p>Characteristics of system programming include: a deep understanding of hardware architecture, the pursuit of maximum execution efficiency, handling concurrency and synchronization, strict resource management and error handling, and an emphasis on portability and standard compliance. Examples include OS kernels, device drivers, compilers, and linkers.</p>
+            <p>System programming cultivates a deep understanding of computer systems, which is invaluable for debugging, performance optimization, and security research. Many performance bottlenecks in high-level applications often require system-level understanding to resolve.</p>
+
+            <h3>1.2 History of System Programming</h3>
+            <p>The development of system programming is closely tied to the evolution of computer hardware, going through several important stages:</p>
+            <ul>
+                <li><strong>1950s:</strong> Assembly language was the main tool. Programmers directly manipulated machine code and memory addresses. Software was highly hardware-dependent with poor portability.</li>
+                <li><strong>1960s:</strong> Operating systems emerged (e.g., IBM's OS/360, MULTICS), providing a hardware abstraction layer. Early compilers and high-level languages also appeared.</li>
+                <li><strong>1970s:</strong> The birth of the UNIX operating system marked a major milestone. The invention of the C language made system programming more convenient and portable. The POSIX standard further promoted standardization.</li>
+                <li><strong>1980s & 1990s:</strong> The rise of personal computers drove the development of BIOS and device drivers. Windows and Mac OS became mainstream. The addition of networking made system programs more complex.</li>
+                <li><strong>2000s onwards:</strong> Virtualization and cloud computing drove innovation. Multi-core processors introduced new concurrent programming challenges. The rise of smartphones spurred embedded system programming.</li>
+            </ul>
+
+            <h3>1.3 The Importance of System Programming</h3>
+            <p>First, it is the bridge between hardware and application software, managing CPU, memory, disk, and network resources. Without system software, applications cannot run.</p>
+            <p>Second, it builds a profound understanding of computer systems, essential for debugging, performance tuning, and security research. Programmers who understand the underlying mechanics write more efficient and reliable code.</p>
+            <p>Finally, system programming is the foundation of information security. Many vulnerabilities stem from design flaws in system software; understanding these mechanisms is crucial for discovering and patching security holes.</p>
+
+            <h3>1.4 Classification of System Programs</h3>
+            <ol>
+                <li><strong>Operating System Kernel:</strong> Manages hardware resources, providing process management, memory management, and file systems.</li>
+                <li><strong>Device Drivers:</strong> Act as interfaces between hardware devices and the OS, controlling device operations.</li>
+                <li><strong>Compilers:</strong> Translate high-level languages into machine code (e.g., GCC, Clang).</li>
+                <li><strong>Assemblers:</strong> Translate assembly language into machine code (e.g., MASM, NASM).</li>
+                <li><strong>Linkers:</strong> Combine multiple object files into a single executable (e.g., ld, link).</li>
+                <li><strong>Loaders:</strong> Load executables into memory and start execution.</li>
+                <li><strong>Debuggers:</strong> Help programmers find and fix errors (e.g., GDB, WinDbg).</li>
+                <li><strong>System Utilities:</strong> Provide management and maintenance functions (e.g., ls, ps, top).</li>
+            </ol>
+        </section>
+
+        <section id="ch2" class="chapter">
+            <h2>Chapter 2: Assembly Language and Machine Code</h2>
+            
+            <h3>2.1 Machine Language Basics</h3>
+            <p>Machine language is the binary instruction set directly executed by the CPU, representing the lowest level of programming. Every processor architecture has a unique Instruction Set Architecture (ISA), such as x86, ARM, MIPS, or RISC-V. Different ISAs have different instruction formats, registers, and memory models, determining portability.</p>
+            <p>Machine instructions consist of an Opcode (the operation to perform, like addition or jumping) and Operands (the data or memory locations involved, which can be registers, immediate values, or memory addresses).</p>
+
+            <h3>2.2 Characteristics of Assembly Language</h3>
+            <p>Assembly language is the human-readable representation of machine language, using Mnemonics instead of binary opcodes. For example, in x86, <code>MOV</code> transfers data, <code>ADD</code> performs addition, and <code>JMP</code> performs an unconditional jump.</p>
+            <p>It allows the use of labels to mark code and data locations, and macros to simplify repetitive code. A typical structure includes directives (for data/section definition), labels, and instructions.</p>
+
+            <h3>2.3 Assembly Programming Practices</h3>
+            <p>Writing assembly requires understanding the target architecture's register set, memory model, and instruction set. In x86-64, key registers include:</p>
+            <ul>
+                <li><strong>General-purpose:</strong> RAX, RBX, RCX, RDX, RSP, RBP, RSI, RDI</li>
+                <li><strong>Additional:</strong> R8 to R15</li>
+                <li><strong>Special:</strong> RIP (Instruction Pointer), RFLAGS (Status Flags)</li>
+            </ul>
+            <p>Programmers must manually manage the stack, master calling conventions, and understand addressing modes (direct, indirect, base + offset). Assembly is commonly used for performance-critical code, embedded systems, malware analysis, BIOS/driver development, and OS kernels.</p>
+
+            <h3>2.4 Assembler Principles</h3>
+            <p>An assembler translates assembly into machine code. Modern assemblers support macros, conditional compilation, and debug symbols.</p>
+            <p>A Two-pass Assembly approach is common:</p>
+            <ul>
+                <li><strong>Pass 1:</strong> Scans the program, collects all label addresses, and builds a symbol table.</li>
+                <li><strong>Pass 2:</strong> Generates machine code using the symbol table and resolves forward references.</li>
+            </ul>
+            <p>Common assemblers include NASM, MASM, FASM, and GAS.</p>
+        </section>
+
+        <section id="ch3" class="chapter">
+            <h2>Chapter 3: Compiler Design</h2>
+
+            <h3>3.1 Basic Structure of a Compiler</h3>
+            <p>A compiler translates high-level language code into target machine code. It is typically divided into a Frontend and a Backend, allowing a single compiler to support multiple source languages and target platforms.</p>
+            <ul>
+                <li><strong>Frontend:</strong> Lexical analysis, syntax analysis, semantic analysis, and intermediate representation (IR) generation.</li>
+                <li><strong>Backend:</strong> IR optimization, target code generation, and machine-specific optimizations.</li>
+            </ul>
+
+            <h3>3.2 Lexical Analysis</h3>
+            <p>The first stage, converting the source character stream into a token stream. The lexer identifies identifiers, keywords, operators, delimiters, and literals. Regular expressions and finite state machines are used to implement lexers.</p>
+
+            <h3>3.3 Syntax Analysis</h3>
+            <p>Checks the grammatical correctness of the token stream based on grammar rules, building a Parse Tree or Abstract Syntax Tree (AST). Common methods include Top-down parsing (LL) and Bottom-up parsing (LR).</p>
+
+            <h3>3.4 Semantic Analysis</h3>
+            <p>Performs deeper checks to ensure the code's meaning is correct. Tasks include type checking, scope resolution, and symbol table management.</p>
+
+            <h3>3.5 Intermediate Representation and Optimization</h3>
+            <p>IR acts as a bridge between the source and target languages (e.g., Three-Address Code, SSA, CFG). Optimizations include Constant Propagation, Dead Code Elimination, Loop Invariant Code Motion, and Instruction Scheduling.</p>
+
+            <h3>3.6 Target Code Generation</h3>
+            <p>Translates optimized IR into machine code. This involves Register Allocation (often using graph coloring), Instruction Selection, Calling Convention Handling, and Target Code Scheduling.</p>
+        </section>
+
+        <section id="ch4" class="chapter">
+            <h2>Chapter 4: Operating System Kernel</h2>
+
+            <h3>4.1 OS Overview</h3>
+            <p>The OS manages hardware resources and provides services to applications. Core functions include process management, memory management, file systems, device drivers, and security. Classic OSs include UNIX, Linux, Windows, and macOS.</p>
+
+            <h3>4.2 Processes and Threads</h3>
+            <p>A <strong>Process</strong> is the basic unit of resource allocation, possessing its own address space, code/data, file descriptors, and environment variables. A <strong>Thread</strong> is the execution unit within a process; threads share the process's resources but have their own execution state, registers, and stack.</p>
+            <p>Scheduling algorithms (FCFS, SJF, Round Robin, Multilevel Feedback Queue) determine CPU time allocation.</p>
+
+            <h3>4.3 Memory Management</h3>
+            <p>Core techniques include Paging (mapping virtual to physical addresses), Segmentation, Swapping, and Virtual Memory. Optimizations include defragmentation, memory pools, and garbage collection.</p>
+
+            <h3>4.4 File Systems</h3>
+            <p>Provides an abstraction for persistent data storage. Common systems include FAT, NTFS, ext4, HFS+, and Btrfs. Core concepts include files, directories, inodes, and file descriptors. Consistency is ensured via journaling and checkpoints.</p>
+
+            <h3>4.5 Device Drivers</h3>
+            <p>Interfaces between the OS and hardware. Responsibilities include initialization, data transfer, buffer management, and interrupt handling. Devices are grouped into Character Devices (byte-by-byte) and Block Devices (data blocks).</p>
+
+            <h3>4.6 Kernel Synchronization and Concurrency</h3>
+            <p>Kernel code must safely handle concurrent access to shared resources using Spin Locks (for short critical sections), Mutexes (for longer sections), Semaphores, and Condition Variables. Priority inversion is mitigated using priority inheritance or priority ceilings.</p>
+        </section>
+
+        <section id="ch5" class="chapter">
+            <h2>Chapter 5: Linkers and Loaders</h2>
+
+            <h3>5.1 Object File Formats</h3>
+            <p>Containers for machine code and metadata. Formats include ELF (Unix/Linux), PE (Windows), and Mach-O (macOS). ELF sections typically include <code>.text</code> (code), <code>.data</code> (initialized data), <code>.bss</code> (uninitialized data), <code>.rodata</code> (read-only), and <code>.symtab</code> (symbol table).</p>
+
+            <h3>5.2 Symbol Management</h3>
+            <p>Symbols represent names like functions and variables. Symbol resolution matches references to definitions, resolving conflicts between strong (initialized) and weak (uninitialized) symbols.</p>
+
+            <h3>5.3 Relocation</h3>
+            <p>Adjusts relative addresses to final execution addresses. Relocation tables dictate where and how to modify addresses once the base load address is known.</p>
+
+            <h3>5.4 Static Linking</h3>
+            <p>Integrates all object files and libraries into a single executable at compile time. It guarantees zero missing dependencies at runtime but results in larger file sizes and duplicate code in memory across different programs.</p>
+
+            <h3>5.5 Dynamic Linking</h3>
+            <p>Resolves symbols at runtime. Executables only contain references to Shared Libraries (.so or .dll). It saves memory and allows independent library updates. Lazy binding defers symbol resolution until a function is actually called.</p>
+
+            <h3>5.6 Loaders</h3>
+            <p>Responsible for loading the executable into memory, setting up virtual address spaces, mapping sections, configuring the stack, and initializing the dynamic linker before jumping to the entry point. Loaders also handle security features like ASLR and PIE.</p>
+        </section>
+
+        <section id="ch6" class="chapter">
+            <h2>Chapter 6: System Tools and Software Development</h2>
+
+            <h3>6.1 Version Control Systems</h3>
+            <p>Tools like Git manage code history. Concepts include Repositories, Commits, Branches, and Merging. Branching strategies (Git Flow, GitHub Flow) facilitate teamwork.</p>
+
+            <h3>6.2 Build Automation</h3>
+            <p>Tools streamline compilation. Examples include Make (using Makefiles), CMake, Autotools, and package managers (Cargo, npm, pip, Maven). CI/CD pipelines (Jenkins, GitHub Actions) automate testing and deployment.</p>
+
+            <h3>6.3 Debugging Tools</h3>
+            <p>GDB is the standard CLI debugger on Linux (breakpoints, stepping, memory inspection). Valgrind detects memory leaks (memcheck), while static analysis tools (Coverity, clang-tidy) find issues without executing the code.</p>
+
+            <h3>6.4 Profiling</h3>
+            <p>Identifies performance bottlenecks. Hot spot analysis and call graphs show where time is spent. Tools include gprof, perf, Valgrind's Callgrind, and Intel VTune.</p>
+
+            <h3>6.5 Testing Frameworks</h3>
+            <p>Unit testing (Google Test, JUnit, pytest), Integration testing, and System testing ensure quality. Test-Driven Development (TDD) emphasizes writing tests before code. Coverage tools measure how much code is tested.</p>
+
+            <h3>6.6 Code Quality</h3>
+            <p>Linters (ESLint, Pylint) enforce style. Cyclomatic complexity measures code complexity. Code reviews and quality gates ensure deliverable standards are met.</p>
+        </section>
+
+        <section id="ch7" class="chapter">
+            <h2>Chapter 7: System Security Basics</h2>
+
+            <h3>7.1 Memory Security</h3>
+            <p>Vulnerabilities include Buffer Overflows (overwriting adjacent memory), Stack Overflows (hijacking return addresses), Heap Overflows, and Use-after-free bugs. Defenses include Stack Canaries, ASLR, DEP/NX (Data Execution Prevention), and Control Flow Integrity (CFI).</p>
+
+            <h3>7.2 Privilege Management</h3>
+            <p>OSs control resource access via Unix/Linux file permissions (rwx for Owner, Group, Others), ACLs (Access Control Lists), RBAC (Role-Based Access Control), and MAC (Mandatory Access Control, like SELinux). The principle of least privilege minimizes attack surfaces.</p>
+
+            <h3>7.3 System Calls and APIs</h3>
+            <p>System calls (open, read, fork, mmap) are the interfaces for user-space programs. Improper validation can lead to path traversal or command injection. Tools like strace help track system call usage.</p>
+
+            <h3>7.4 Encryption and Secure Communication</h3>
+            <p>Symmetric encryption (AES) is fast; asymmetric encryption (RSA, ECC) handles key exchange and signatures. Hashing (SHA-256, Bcrypt) ensures integrity and secures passwords. TLS/SSL secures network communications.</p>
+
+            <h3>7.5 Secure Programming Practices</h3>
+            <p>Input validation is the first defense against injections (SQL, XSS, Command). Implement secure update mechanisms, handle errors without leaking sensitive data, and adopt a Secure Development Lifecycle (SDL).</p>
+        </section>
+
+        <section id="ch8" class="chapter">
+            <h2>Chapter 8: Advanced Topics</h2>
+
+            <h3>8.1 Virtualization Technology</h3>
+            <p>Hypervisors (Type-1 native vs. Type-2 hosted) run multiple VMs on physical hardware. CPU virtualization relies on hardware extensions (Intel VT-x, AMD-V). Memory virtualization uses nested page tables. Containers (Docker) offer lightweight, OS-level virtualization.</p>
+
+            <h3>8.2 Cloud Computing</h3>
+            <p>Provides on-demand resources via IaaS, PaaS, and SaaS models. Deployments can be Public, Private, or Hybrid. Cloud-native designs focus on scalability, resilience, and portability.</p>
+
+            <h3>8.3 Real-time Systems</h3>
+            <p>RTOSs (FreeRTOS, VxWorks) guarantee execution within strict deadlines (Hard Real-time) or flexible deadlines (Soft Real-time). They provide deterministic scheduling and minimal interrupt latency.</p>
+
+            <h3>8.4 Embedded Systems</h3>
+            <p>Resource-constrained environments using MCUs (ARM Cortex-M, RISC-V). Developed via bare-metal programming or RTOS. IoT security (Secure Boot, Root of Trust) is a major focus.</p>
+
+            <h3>8.5 Distributed Systems</h3>
+            <p>Multiple independent computers working together via RPC, message queues, or RESTful APIs. Consensus algorithms (Paxos, Raft) ensure consistency. The CAP Theorem states a distributed system can only guarantee two of Consistency, Availability, and Partition Tolerance.</p>
+
+            <h3>8.6 Future Trends</h3>
+            <p>Rust is gaining traction for memory-safe system programming. WebAssembly offers portable execution. eBPF allows safe kernel extensions. Confidential Computing protects data in use via hardware enclaves.</p>
+        </section>
+
+        <section id="appendix" class="chapter appendix">
+            <h2>Appendix: Glossary</h2>
+            <dl>
+                <dt>ABI (Application Binary Interface)</dt>
+                <dd>Rules governing low-level code interactions with the system.</dd>
+                
+                <dt>API (Application Programming Interface)</dt>
+                <dd>Definitions for how software components interact.</dd>
+                
+                <dt>ASLR (Address Space Layout Randomization)</dt>
+                <dd>A security technique that randomizes memory addresses to prevent attacks.</dd>
+                
+                <dt>BSP (Board Support Package)</dt>
+                <dd>Software support code for a specific hardware motherboard.</dd>
+                
+                <dt>DMA (Direct Memory Access)</dt>
+                <dd>A feature allowing hardware subsystems to access main memory independently of the CPU.</dd>
+                
+                <dt>ELF (Executable and Linkable Format)</dt>
+                <dd>Standard object file format for Unix-like systems.</dd>
+                
+                <dt>GOT (Global Offset Table)</dt>
+                <dd>A table used in dynamic linking to resolve symbol addresses.</dd>
+                
+                <dt>HAL (Hardware Abstraction Layer)</dt>
+                <dd>A software layer that isolates hardware-specific details from the OS or application.</dd>
+                
+                <dt>IR (Intermediate Representation)</dt>
+                <dd>The data structure or code used internally by a compiler to represent source code.</dd>
+                
+                <dt>IPC (Inter-Process Communication)</dt>
+                <dd>Mechanisms allowing processes to share data and synchronize actions.</dd>
+                
+                <dt>ISR (Interrupt Service Routine)</dt>
+                <dd>A software routine that hardware invokes in response to an interrupt.</dd>
+                
+                <dt>JIT (Just-In-Time Compilation)</dt>
+                <dd>Compiling bytecode into machine code at runtime.</dd>
+                
+                <dt>POSIX (Portable Operating System Interface)</dt>
+                <dd>Standardized OS interfaces primarily for Unix environments.</dd>
+                
+                <dt>TLS (Thread-Local Storage)</dt>
+                <dd>Memory reserved for variables unique to a specific thread.</dd>
+            </dl>
+            <hr>
+            <p><em>This comprehensive guide covers the core concepts and practices of system programming, suitable as a university textbook or self-study reference.</em></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 System Programming Guide. Hosted on Vercel.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
