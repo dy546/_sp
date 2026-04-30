@@ -51,3 +51,13 @@ Module.symvers
 Mkfile.old
 dkms.conf
 venv
+node_modules/
+dist/
+.env
+*.log
+.DS_Store
+__pycache__
+
+# Session logs (local only)
+CHAT_LOG.md
+**/CHAT_LOG.md

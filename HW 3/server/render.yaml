@@ -1,0 +1,6 @@
+runtime: node
+buildCommand: npm install
+startCommand: node src/index.js
+healthCheckPath: /api/health
+env:
+  NODE_VERSION: "22"
