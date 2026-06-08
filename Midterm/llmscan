@@ -1,0 +1,418 @@
+#!/usr/bin/env bash
+# llmscan - Hardware-Aware Local LLM Recommender
+# Usage: ./llmscan [--json] [--model MODEL_ID] [--refresh-cache] [--help]
+set -euo pipefail
+
+VERSION="1.0.0"
+CACHE_DIR="${HOME}/.cache/llmscan"
+MODEL_CACHE="${CACHE_DIR}/models.json"
+FETCH_METHOD="ollama"  # ollama, huggingface, or static
+
+# ------------------------------- Helper Functions -------------------------------
+usage() {
+    cat << EOF
+Usage: llmscan [OPTIONS]
+
+Options:
+    --json              Output in JSON format for scripting
+    --model MODEL_ID    Analyze a specific model from HuggingFace
+    --refresh-cache     Force refresh of remote model catalog
+    --no-cache          Do not use local cache
+    --cpu-only          Restrict to CPU-only recommendations
+    --help              Show this help message
+
+Examples:
+    ./llmscan                          # Standard hardware scan & recommendations
+    ./llmscan --json                   # Machine-readable output
+    ./llmscan --model meta-llama/Llama-2-7b-hf  # Check specific model
+EOF
+    exit 0
+}
+
+# Detect if command exists
+has_cmd() { command -v "$1" &>/dev/null; }
+
+# Detect OS
+detect_os() {
+    case "$(uname -s)" in
+        Linux)  echo "linux" ;;
+        Darwin) echo "darwin" ;;
+        *)      echo "unknown" ;;
+    esac
+}
+OS="$(detect_os)"
+
+# Fetch data with timeout and retry
+fetch_url() {
+    local url="$1" timeout="${2:-5}"
+    if has_cmd curl; then
+        curl -s --max-time "$timeout" --retry 2 "$url" 2>/dev/null || echo ""
+    elif has_cmd wget; then
+        wget -q -T "$timeout" -O - "$url" 2>/dev/null || echo ""
+    else
+        echo ""
+    fi
+}
+
+# ------------------------------- Hardware Detection -------------------------------
+get_total_ram_gb() {
+    case "$OS" in
+        linux)  awk '/MemTotal/ {printf "%.1f", $2/1024^2}' /proc/meminfo ;;
+        darwin)
+            local bytes=$(sysctl -n hw.memsize 2>/dev/null)
+            echo "scale=1; $bytes / 1073741824" | bc 2>/dev/null || echo 0
+            ;;
+        *)      echo 0 ;;
+    esac
+}
+
+get_available_ram_gb() {
+    case "$OS" in
+        linux)  awk '/MemAvailable/ {printf "%.1f", $2/1024^2}' /proc/meminfo ;;
+        darwin)
+            local pagesize=$(sysctl -n hw.pagesize 2>/dev/null)
+            local vm_out=$(vm_stat 2>/dev/null)
+            local free=$(echo "$vm_out" | awk '/Pages free/ {print $3}' | tr -d '.')
+            local inactive=$(echo "$vm_out" | awk '/Pages inactive/ {print $3}' | tr -d '.')
+            local speculative=$(echo "$vm_out" | awk '/Pages speculative/ {print $3}' | tr -d '.')
+            local avail_bytes=$(( (free + inactive + speculative) * pagesize ))
+            echo "scale=1; $avail_bytes / 1073741824" | bc 2>/dev/null || echo 0
+            ;;
+        *)      echo 0 ;;
+    esac
+}
+
+get_swap_gb() {
+    case "$OS" in
+        linux)  awk '/SwapTotal/ {printf "%.1f", $2/1024^2}' /proc/meminfo ;;
+        darwin)
+            local swap_mb=$(sysctl vm.swapusage 2>/dev/null | awk '{print $4}' | sed 's/M$//')
+            echo "scale=1; ${swap_mb:-0} / 1024" | bc 2>/dev/null || echo 0
+            ;;
+        *)      echo 0 ;;
+    esac
+}
+
+get_cpu_cores() {
+    case "$OS" in
+        linux)  nproc 2>/dev/null || grep -c ^processor /proc/cpuinfo ;;
+        darwin) sysctl -n hw.ncpu 2>/dev/null || echo 1 ;;
+        *)      echo 1 ;;
+    esac
+}
+
+get_cpu_features() {
+    local features
+    case "$OS" in
+        linux)
+            if grep -qi "flags" /proc/cpuinfo 2>/dev/null; then
+                features=$(grep -m1 "flags" /proc/cpuinfo | tr ' ' '\n')
+            else
+                features=$(grep -m1 "Features" /proc/cpuinfo 2>/dev/null | tr ' ' '\n' || echo "")
+            fi
+            ;;
+        darwin)
+            features=$(sysctl -n machdep.cpu.features 2>/dev/null | tr ' ' '\n' | tr '[:upper:]' '[:lower:]')
+            ;;
+        *) features="" ;;
+    esac
+    echo "$features" | grep -q "avx512" && echo "avx512" && return
+    echo "$features" | grep -q "avx2" && echo "avx2" && return
+    echo "$features" | grep -q "avx" && echo "avx" && return
+    echo "sse4_2"
+}
+
+get_gpu_info() {
+    local vendor="" vram_gb=0
+    if has_cmd nvidia-smi; then
+        vendor="nvidia"
+        vram_gb=$(nvidia-smi --query-gpu=memory.total --format=csv,noheader 2>/dev/null | head -1 | awk '{printf "%.0f", $1/1024}')
+        echo "$vendor|$vram_gb"
+        return
+    fi
+    case "$OS" in
+        linux)
+            if lspci 2>/dev/null | grep -qi "amd.*vga\|advanced micro devices.*vga"; then
+                vendor="amd"
+                vram_gb=$(lspci -v 2>/dev/null | grep -A10 "VGA.*AMD" | grep -i "Memory at" | head -1 | grep -oP '[0-9]+M' | tr -d 'M' | awk '{printf "%.0f", $1/1024}')
+                [[ -z "$vram_gb" || "$vram_gb" -eq 0 ]] && vram_gb="unknown"
+            elif lspci 2>/dev/null | grep -qi "intel.*vga\|intel corporation.*graphics"; then
+                vendor="intel"
+                vram_gb="shared"
+            fi
+            ;;
+        darwin)
+            if has_cmd system_profiler; then
+                local sp=$(system_profiler SPDisplaysDataType 2>/dev/null)
+                if echo "$sp" | grep -qi "apple.*m[0-9]"; then
+                    echo "apple|shared"
+                    return
+                fi
+                # Check for discrete GPU first (AMD/NVIDIA), fall back to Intel
+                if echo "$sp" | grep -qi "radeon\|amd"; then
+                    vendor="amd"
+                elif echo "$sp" | grep -qi "nvidia\|geforce"; then
+                    vendor="nvidia"
+                elif echo "$sp" | grep -qi "intel"; then
+                    vendor="intel"
+                    vram_gb="shared"
+                fi
+                if [[ "$vram_gb" != "shared" && -n "$vendor" ]]; then
+                    local vram_line=$(echo "$sp" | grep "VRAM.*Total" | head -1)
+                    local vram_num=$(echo "$vram_line" | grep -oE '[0-9.]+' | head -1)
+                    if echo "$vram_line" | grep -qi "GB"; then
+                        vram_gb=${vram_num:-0}
+                    elif echo "$vram_line" | grep -qi "MB"; then
+                        vram_gb=$(echo "scale=0; ${vram_num:-0} / 1024" | bc 2>/dev/null)
+                        [[ "$vram_gb" == "0" ]] && vram_gb=1
+                    fi
+                fi
+            fi
+            ;;
+    esac
+    echo "$vendor|$vram_gb"
+}
+
+get_free_disk_gb() {
+    local dir="${1:-$HOME}"
+    case "$OS" in
+        linux)  df --output=avail "$dir" 2>/dev/null | tail -1 | awk '{printf "%.0f", $1/1024^2}' ;;
+        darwin) df -k "$dir" 2>/dev/null | tail -1 | awk '{printf "%.0f", $4/1024^2}' ;;
+        *)      echo 0 ;;
+    esac
+}
+
+# ------------------------------- Remote Model Data Fetching -------------------------------
+# Method 1: Ollama API (best for Ollama users)
+fetch_ollama_catalog() {
+    local catalog=""
+    if has_cmd ollama && ollama list &>/dev/null; then
+        catalog=$(ollama list --json 2>/dev/null || echo "")
+    fi
+    if [[ -z "$catalog" ]]; then
+        # Fallback to public library API
+        catalog=$(fetch_url "https://ollama.com/library?format=json" 10)
+    fi
+    if [[ -n "$catalog" ]]; then
+        echo "$catalog" | jq -r '.models[] | "\(.name)|\(.parameter_size)|\(.size)|ollama|\(.quantization//"Q4")"' 2>/dev/null || echo ""
+    else
+        echo ""
+    fi
+}
+
+# Method 2: HuggingFace API via vramio (no local download)
+fetch_huggingface_model() {
+    local model_id="$1"
+    fetch_url "https://vramio.ksingh.in/model?hf_id=$model_id" 10
+}
+
+# Method 3: do-i-have-the-vram (if installed, more detailed)
+fetch_vram_calc() {
+    local model_id="$1"
+    if has_cmd do-i-have-the-vram; then
+        do-i-have-the-vram "$model_id" --json 2>/dev/null || echo ""
+    else
+        fetch_huggingface_model "$model_id"
+    fi
+}
+
+# Method 4: whichllm (excellent ranking data)
+fetch_whichllm_ranking() {
+    if has_cmd whichllm; then
+        whichllm --json 2>/dev/null || echo ""
+    else
+        echo ""
+    fi
+}
+
+# Method 5: llm-checker (Node.js based)
+fetch_llm_checker() {
+    if has_cmd npx && npx llm-checker --version &>/dev/null; then
+        npx llm-checker --json 2>/dev/null || echo ""
+    else
+        echo ""
+    fi
+}
+
+# Build unified model database from multiple sources
+build_model_database() {
+    local output=""
+    # 1. Ollama catalog
+    local ollama_models=$(fetch_ollama_catalog)
+    if [[ -n "$ollama_models" ]]; then
+        output+="$ollama_models"
+    fi
+    
+    # 2. Static fallback for essential models
+    output+="
+llama3.1:8b|8B|4.5GB|ollama|Q4
+mistral:7b|7B|4.1GB|ollama|Q4
+phi3:3.8b|3.8B|2.2GB|ollama|Q4
+gemma2:9b|9B|5.5GB|ollama|Q4
+mixtral:8x7b|46.9B|26GB|llama.cpp|Q4
+qwen2:72b|72B|41GB|llama.cpp|Q4
+deepseek-coder:6.7b|6.7B|3.8GB|ollama|Q4
+"
+    echo "$output" | awk -F'|' '!seen[$1]++'
+}
+
+# Refresh cache with remote data
+refresh_model_cache() {
+    mkdir -p "$CACHE_DIR"
+    build_model_database > "$MODEL_CACHE"
+}
+
+# Load model database (with caching)
+load_model_database() {
+    if [[ "$REFRESH_CACHE" == "true" ]] || [[ ! -f "$MODEL_CACHE" ]]; then
+        refresh_model_cache
+    fi
+    cat "$MODEL_CACHE"
+}
+
+# ------------------------------- Model Recommendation Logic -------------------------------
+calculate_fit_score() {
+    local model_name="$1" req_ram="$2" req_vram="$3" quant="$4"
+    local av_ram="$5" av_vram="$6" cpu_score="$7"
+    local ram_fit=$(echo "scale=2; if($av_ram >= $req_ram) 1 else $av_ram/$req_ram" | bc)
+    local vram_fit=0
+    if [[ "$av_vram" != "0" && "$req_vram" != "0" && "$av_vram" != "unknown" ]]; then
+        vram_fit=$(echo "scale=2; if($av_vram >= $req_vram) 1 else $av_vram/$req_vram" | bc)
+    fi
+    local score=$(echo "scale=2; $ram_fit*0.4 + $vram_fit*0.5 + $cpu_score*0.1" | bc)
+    printf "%.2f" "$score"
+}
+
+recommend_models() {
+    local cpu_cores=$(get_cpu_cores)
+    local cpu_score=$(echo "scale=2; if($cpu_cores >= 16) 1 else $cpu_cores/16" | bc)
+    local total_ram=$(get_total_ram_gb)
+    local avail_ram=$(get_available_ram_gb)
+    local swap=$(get_swap_gb)
+    local effective_ram=$(echo "$avail_ram + $swap" | bc)
+    local gpu_info=$(get_gpu_info)
+    local gpu_vendor="${gpu_info%|*}"
+    local gpu_vram="${gpu_info#*|}"
+    if [[ "$CPU_ONLY" == "true" ]]; then
+        gpu_vram="0"
+    fi
+    [[ "$gpu_vram" == "shared" ]] && gpu_vram="0"
+    [[ "$gpu_vram" == "unknown" ]] && gpu_vram="0"
+    local free_disk=$(get_free_disk_gb)
+    local cpu_feat=$(get_cpu_features)
+    
+    # Load models
+    local models=$(load_model_database)
+    local candidates=()
+    
+    while IFS='|' read -r name param_size size backend quant; do
+        [[ -z "$name" ]] && continue
+        # Estimate requirements from param size
+        local param_num=$(echo "$param_size" | sed 's/B$//' | sed 's/\.[0-9]*//')
+        local fp16_gb=$(echo "scale=1; $param_num * 2 / 1" | bc)
+        local q4_gb=$(echo "scale=1; $param_num * 0.5 / 1" | bc)
+        local req_ram=$q4_gb
+        local req_vram=0
+        [[ "$gpu_vram" != "0" && "$gpu_vram" != "" ]] && req_vram=$q4_gb
+        
+        # Check compatibility
+        [[ $(echo "$effective_ram >= $req_ram" | bc) -eq 1 ]] || continue
+        if [[ -n "$gpu_vram" && "$gpu_vram" != "0" && "$gpu_vram" != "unknown" ]]; then
+            [[ $(echo "$gpu_vram >= $req_vram" | bc) -eq 1 ]] || continue
+        fi
+        [[ $(echo "$free_disk >= $(echo $size | sed 's/GB$//')" | bc) -eq 1 ]] || continue
+        
+        score=$(calculate_fit_score "$name" "$req_ram" "$req_vram" "$quant" "$effective_ram" "$gpu_vram" "$cpu_score")
+        candidates+=("$score|$name|$param_size|$quant|$backend|${req_ram}GB|${gpu_vram}GB")
+    done <<< "$models"
+    
+    # Sort by score descending
+    printf '%s\n' "${candidates[@]}" | sort -t'|' -k1,1rn
+}
+
+# ------------------------------- Output Functions -------------------------------
+output_json() {
+    local header="{\"timestamp\":\"$(date -Iseconds)\",\"hardware\":{\"total_ram_gb\":$(get_total_ram_gb),\"available_ram_gb\":$(get_available_ram_gb),\"swap_gb\":$(get_swap_gb),\"cpu_cores\":$(get_cpu_cores),\"cpu_features\":\"$(get_cpu_features)\",\"gpu\":\"$(get_gpu_info)\",\"free_disk_gb\":$(get_free_disk_gb)},\"models\":["
+    local recommendations=$(recommend_models | head -5)
+    local first=true
+    while IFS='|' read -r score name param_size quant backend req_ram req_vram; do
+        $first || header+=","
+        header+="{\"name\":\"$name\",\"score\":$score,\"parameters\":\"$param_size\",\"quantization\":\"$quant\",\"backend\":\"$backend\",\"estimated_ram\":\"$req_ram\",\"estimated_vram\":\"$req_vram\"}"
+        first=false
+    done <<< "$recommendations"
+    header+="]}"
+    echo "$header" | jq '.' 2>/dev/null || echo "$header"
+}
+
+output_human() {
+    echo "=== Hardware Summary ==="
+    echo "CPU: $(get_cpu_cores) cores, $(get_cpu_features) instruction set"
+    echo "RAM: $(get_available_ram_gb) GiB available / $(get_total_ram_gb) GiB total"
+    local gpu_info=$(get_gpu_info)
+    IFS='|' read -r gpu_vendor gpu_vram <<< "$gpu_info"
+    if [[ "$gpu_vendor" == "nvidia" && "$gpu_vram" != "0" ]]; then
+        echo "GPU: NVIDIA ($gpu_vram GiB VRAM)"
+    elif [[ "$gpu_vendor" == "amd" ]]; then
+        echo "GPU: AMD ($gpu_vram GiB VRAM)"
+    else
+        echo "GPU: CPU-only mode (no dedicated GPU detected)"
+    fi
+    echo "Disk: $(get_free_disk_gb) GiB free in $HOME"
+    echo ""
+    echo "=== Recommended LLMs (can run locally) ==="
+    
+    local recommendations=$(recommend_models | head -5)
+    local count=1
+    while IFS='|' read -r score name param_size quant backend req_ram req_vram; do
+        echo -e "\n${count}. ${name} (${quant})"
+        echo "   → Score: ${score}/1.00"
+        echo "   → Parameters: ${param_size}"
+        echo "   → Backend: ${backend}"
+        echo "   → Required RAM: ${req_ram}"
+        [[ "$req_vram" != "0GB" && "$req_vram" != "" ]] && echo "   → Required VRAM: ${req_vram}"
+        echo "   → Install: $(case $backend in ollama) echo "ollama run ${name}";; llama.cpp) echo "llama.cpp: download GGUF from HF";; *) echo "See documentation";; esac)"
+        ((count++))
+    done <<< "$recommendations"
+}
+
+# ------------------------------- Specific Model Check -------------------------------
+check_specific_model() {
+    local model_id="$1"
+    echo "Analyzing model: $model_id"
+    local result=$(fetch_vram_calc "$model_id")
+    if [[ -n "$result" ]]; then
+        echo "$result" | jq '.' 2>/dev/null || echo "$result"
+    else
+        echo "Unable to fetch model data. Install 'do-i-have-the-vram' or ensure internet connectivity."
+        echo "  pip install do-i-have-the-vram"
+    fi
+}
+
+# ------------------------------- Main -------------------------------
+REFRESH_CACHE=false
+JSON_OUTPUT=false
+CPU_ONLY=false
+SPECIFIC_MODEL=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --json) JSON_OUTPUT=true; shift ;;
+        --refresh-cache) REFRESH_CACHE=true; shift ;;
+        --cpu-only) CPU_ONLY=true; shift ;;
+        --no-cache) rm -f "$MODEL_CACHE" 2>/dev/null; shift ;;
+        --model) SPECIFIC_MODEL="$2"; shift 2 ;;
+        --help) usage ;;
+        *) echo "Unknown option: $1"; usage ;;
+    esac
+done
+
+if [[ -n "$SPECIFIC_MODEL" ]]; then
+    check_specific_model "$SPECIFIC_MODEL"
+    exit 0
+fi
+
+if [[ "$JSON_OUTPUT" == "true" ]]; then
+    output_json
+else
+    output_human
+fi
