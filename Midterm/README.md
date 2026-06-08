@@ -87,7 +87,7 @@ $ ./llmscan
 CPU: 12 cores, avx2 instruction set
 RAM: 1.6 GiB available / 3.7 GiB total
 GPU: CPU-only mode (no dedicated GPU detected)
-Disk: 927 GiB free in /home/user
+Disk: 927 GiB free
 
 === Recommended LLMs (can run locally) ===
 
